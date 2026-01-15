@@ -7,18 +7,19 @@ function ProductHighlight() {
   const [searchText, setSearchText] = useState("");
 
   const getProducts = async () => {
-    //      http://localhost:4000/products?search=""
-    //      http://localhost:4000/products?search="green"
-
-    const productDataFromServer = await axios.get(
-      `http://localhost:4000/products?search=${searchText}`
-    );
-    setProducts(productDataFromServer.data);
+    try {
+      const response = await axios.get(
+        `http://localhost:4000/products?search=${searchText}`
+      );
+      setProducts(response.data);
+    } catch (error) {
+      console.error("Error fetching products:", error);
+    }
   };
 
   useEffect(() => {
     getProducts();
-  }, [searchText]);
+  }, []);
 
   return (
     <section className="bg-gray-200 py-8">
@@ -34,6 +35,12 @@ function ProductHighlight() {
               setSearchText(event.target.value);
             }}
           />
+          <button
+            onClick={getProducts}
+            className="p-2 bg-blue-500 text-white rounded ml-2"
+          >
+            Search
+          </button>
         </div>
         <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
           {products.map((item) => {
